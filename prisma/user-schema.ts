@@ -1,4 +1,4 @@
-import { object, string, TypeOf } from "zod";
+import { number, object, string, TypeOf } from "zod";
 
 export const createUserSchema = object({
   name: string({ required_error: "Name is required" }).min(
@@ -24,5 +24,23 @@ export const loginUserSchema = object({
   ),
 });
 
+export const verifyUserSchema = object({
+  email: string({ required_error: "Email is required" })
+    .min(1, "Email is required")
+    .email("Invalid email"),
+  otp: string({ required_error: "OTP is required" }),
+});
+export const addCategorySchema = object({
+  userId: string({ required_error: "User ID is required" }),
+  categoryId: string({ required_error: "Category ID is required" }),
+});
+export const getCategorySchema = object({
+  userId: string({ required_error: "User ID is required" }),
+  limit: number({ required_error: "Limit is required" }),
+  skip: number({ required_error: "Skip is required" }),
+});
 export type CreateUserInput = TypeOf<typeof createUserSchema>;
 export type LoginUserInput = TypeOf<typeof loginUserSchema>;
+export type VerifyUserSchema = TypeOf<typeof verifyUserSchema>;
+export type AddCategoryInput = TypeOf<typeof addCategorySchema>;
+export type GetCategorySchema = TypeOf<typeof getCategorySchema>;

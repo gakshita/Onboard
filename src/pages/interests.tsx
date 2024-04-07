@@ -1,5 +1,5 @@
 import Checkbox from "~/components/checkbox";
-import useInerests from "~/hooks/useInterests";
+import useInerests, { CategoryInterface } from "~/hooks/useInterests";
 
 const TOTAL_PAGES = 169;
 
@@ -31,25 +31,27 @@ const Interests = () => {
             My saved interests!{" "}
           </div>{" "}
           <div className="flex-1">
-            {categories && categories.data ? (
-              categories.data?.data.map((category: CategoryType) => (
-                <div className="mb-5  flex" key={category.id}>
-                  {loading !== category.id ? (
-                    <Checkbox
-                      onClick={() =>
-                        !category.isInterested &&
-                        handleCheckboxChange(category.id)
-                      }
-                      checked={category.isInterested}
-                    />
-                  ) : (
-                    <span className="loader mr-3"></span>
-                  )}
-                  <label className="text-md my-auto capitalize">
-                    {category.name}
-                  </label>
-                </div>
-              ))
+            {categories && (categories as CategoryInterface).data ? (
+              (categories as CategoryInterface).data?.data.map(
+                (category: CategoryType) => (
+                  <div className="mb-5  flex" key={category.id}>
+                    {loading !== category.id ? (
+                      <Checkbox
+                        onClick={() =>
+                          !category.isInterested &&
+                          handleCheckboxChange(category.id)
+                        }
+                        checked={category.isInterested}
+                      />
+                    ) : (
+                      <span className="loader mr-3"></span>
+                    )}
+                    <label className="text-md my-auto capitalize">
+                      {category.name}
+                    </label>
+                  </div>
+                ),
+              )
             ) : (
               <div>Loading...</div>
             )}

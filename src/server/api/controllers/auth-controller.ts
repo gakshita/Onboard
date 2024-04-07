@@ -3,7 +3,11 @@ import { TRPCError } from "@trpc/server";
 import jwt from "jsonwebtoken";
 // import { cookies } from "next/headers";
 import { prisma } from "prisma/prisma";
-import { CreateUserInput, LoginUserInput } from "prisma/user-schema";
+import {
+  CreateUserInput,
+  LoginUserInput,
+  VerifyUserSchema,
+} from "prisma/user-schema";
 import { generateOTP } from "../utils.ts/otp_generator";
 import { sendEmail } from "../utils.ts/nodemailer";
 
@@ -39,7 +43,7 @@ export const registerHandler = async ({
       },
     };
   } catch (err: any) {
-    if (err.code === "P2002") {
+    if (err.code && err.code === "P2002") {
       throw new TRPCError({
         code: "CONFLICT",
         message: "Email already exists",
@@ -52,7 +56,7 @@ export const registerHandler = async ({
 export const verifyOTPHandler = async ({
   input,
 }: {
-  input: { email: string; otp: string };
+  input: VerifyUserSchema;
 }) => {
   try {
     const user = await prisma.user.findUnique({

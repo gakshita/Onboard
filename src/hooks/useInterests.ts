@@ -4,10 +4,21 @@ import { api } from "~/utils/api";
 
 const PAGE_LIMIT = 6;
 
+export interface CategoryInterface {
+  data: {
+    data: {
+      id: number;
+      name: string;
+      isInterested: boolean;
+    }[];
+  };
+  refetch: () => void;
+}
+
 const useInerests = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [errMessage, setErrMessage] = useState(null);
-  const [loading, setLoading] = useState<Number | null>(null);
+  const [loading, setLoading] = useState<number | null>(null);
   const {
     authState: { userId },
   } = useAuth();
@@ -18,10 +29,10 @@ const useInerests = () => {
     api.category.all.useQuery({
       limit: PAGE_LIMIT,
       skip: currentPage * PAGE_LIMIT,
-      userId: userId.toString(),
+      userId: userId?.toString(),
     });
 
-  const { mutateAsync, error } = api.user.addCategory.useMutation({
+  const { mutateAsync } = api.user.addCategory.useMutation({
     onError: (err: any) => {
       setErrMessage(err), console.log(err);
     },
@@ -30,14 +41,14 @@ const useInerests = () => {
   const handleCheckboxChange = async (id: number) => {
     console.log(id, userId);
     setLoading(id);
-
+    if (!userId) return;
     try {
       const res = await mutateAsync({
-        userId: userId.toString(),
+        userId: userId?.toString(),
         categoryId: id.toString(),
       });
       console.log(res);
-      await categories.refetch();
+      await (categories as CategoryInterface).refetch();
       console.log(categories);
     } catch (err) {
       console.log(err);
@@ -51,6 +62,7 @@ const useInerests = () => {
     currentPage,
     setCurrentPage,
     loading,
+    errMessage,
   };
 };
 

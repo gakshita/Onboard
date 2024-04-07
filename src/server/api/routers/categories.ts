@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { faker } from "@faker-js/faker";
 import { prisma } from "prisma/prisma";
-import { TRPCError } from "@trpc/server";
+// import { TRPCError } from "@trpc/server";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { getUserCategory } from "../controllers/category-controller";
+import { getCategorySchema } from "prisma/user-schema";
 
 export const categoryRouter = createTRPCRouter({
   hello: publicProcedure
@@ -17,14 +18,14 @@ export const categoryRouter = createTRPCRouter({
 
   create: publicProcedure.mutation(async () => {
     // simulate a slow db call
-    let products = [];
+    const products = [];
     for (let i = 0; i < 10; i++) {
       const product = faker.commerce.productName();
       products.push({
         name: product,
       });
     }
-    const createMany = await prisma.category.createMany({
+    await prisma.category.createMany({
       data: products,
       skipDuplicates: true, // Skip 'Bobo'
     });
@@ -34,12 +35,6 @@ export const categoryRouter = createTRPCRouter({
   }),
 
   all: publicProcedure
-    .input(
-      z.object({
-        limit: z.number(),
-        skip: z.number(),
-        userId: z.string(),
-      }),
-    )
+    .input(getCategorySchema)
     .query(({ input }) => getUserCategory({ input })),
 });

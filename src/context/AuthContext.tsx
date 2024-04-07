@@ -1,16 +1,14 @@
 import { useRouter } from "next/router";
+import { createContext, useContext, useReducer, useState } from "react";
 import {
-  createContext,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-} from "react";
-import { authDispatchFunction, initialAuthState } from "~/reducers/authReducer";
+  authDispatchFunction,
+  initialAuthState,
+  AuthState,
+} from "~/reducers/authReducer";
 import { api, setToken } from "~/utils/api";
 
 interface AuthContextType {
-  authState: any;
+  authState: AuthState;
   authDispatch: any;
 }
 
@@ -30,13 +28,13 @@ export function AuthProvider({ children }: React.PropsWithChildren<{}>) {
     authDispatchFunction,
     initialAuthState,
   );
-  const router = useRouter();
+  // const router = useRouter();
 
-  function previousVersionUserCleanup() {
-    localStorage.removeItem("Login");
-    alert("Welcome to Dove v2. Signup to continue.");
-    router.push("/signup");
-  }
+  // function previousVersionUserCleanup() {
+  //   localStorage.removeItem("Login");
+  //   alert("Welcome to Dove v2. Signup to continue.");
+  //   router.push("/signup");
+  // }
 
   // useEffect(() => {
   //   const memory = JSON.parse(localStorage.getItem("Login") || "{}");
@@ -72,7 +70,7 @@ export function useAuth() {
       setErrMessage(err), console.log(err);
     },
   });
-  const { mutateAsync: asyncVerify, error } = api.user.verify.useMutation({
+  const { mutateAsync: asyncVerify } = api.user.verify.useMutation({
     onSuccess: () => router.push("/login"),
     onError: (err: any) => {
       setErrMessage(err), console.log(err);
@@ -111,7 +109,7 @@ export function useAuth() {
   const signup = async (email: string, password: string, name: string) => {
     setLoading(true);
     try {
-      const res = await asyncSignup({ name, email, password });
+      await asyncSignup({ name, email, password });
       setLoading(false);
     } catch (err: any) {
       console.log(err);

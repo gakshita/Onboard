@@ -1,10 +1,11 @@
 import { prisma } from "prisma/prisma";
 import { TRPCError } from "@trpc/server";
+import { AddCategoryInput, GetCategorySchema } from "prisma/user-schema";
 
 export const addUserCategory = async ({
   input,
 }: {
-  input: { userId: string; categoryId: string };
+  input: AddCategoryInput;
 }) => {
   try {
     // Check if the user and category exist
@@ -30,7 +31,7 @@ export const addUserCategory = async ({
     }
 
     // Add the category to the user's categories list
-    const updatedUser = await prisma.user.update({
+    await prisma.user.update({
       where: { id: parseInt(input.userId) },
       data: { categories: { connect: { id: parseInt(input.categoryId) } } },
     });
@@ -44,11 +45,7 @@ export const addUserCategory = async ({
 export const getUserCategory = async ({
   input,
 }: {
-  input: {
-    limit: number;
-    skip: number;
-    userId: string;
-  };
+  input: GetCategorySchema;
 }) => {
   try {
     const allCategories = await prisma.category.findMany({

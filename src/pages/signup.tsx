@@ -1,4 +1,3 @@
-import { tr } from "@faker-js/faker";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useAuth } from "~/context";
@@ -16,7 +15,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
   const router = useRouter();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const { signup, errMessage, loading, signupErr } = useAuth();
+  const { signup, loading, signupErr } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -70,11 +69,12 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
             className="border-light_grey text-md mt-2 w-full rounded-[6px] border-[1px] p-4"
             onChange={(e) => setPassword(e.target.value)}
           />
-          {signupErr?.data?.zodError?.fieldErrors.password && (
-            <span className="mb-8 text-red-500">
-              {signupErr.data.zodError.fieldErrors.password}
-            </span>
-          )}
+          {signupErr &&
+            (signupErr?.data as any).zodError?.fieldErrors.password && (
+              <span className="mb-8 text-red-500">
+                {(signupErr?.data as any).zodError.fieldErrors.password}
+              </span>
+            )}
         </div>
 
         <div className="mb-10">
@@ -90,7 +90,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
           </button>
           <div className="mt-2 text-center text-red-500">
             {signupErr &&
-              !signupErr.data!.zodError &&
+              (signupErr?.data as any)!.zodError &&
               signupErr.data!.stack!.split("\n")[0]}
           </div>
         </div>

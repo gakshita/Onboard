@@ -1,5 +1,11 @@
-import { createUserSchema, loginUserSchema } from "prisma/user-schema";
-import { z } from "zod";
+import {
+  addCategorySchema,
+  createUserSchema,
+  loginUserSchema,
+  verifyUserSchema,
+} from "prisma/user-schema";
+// import { z } from "zod";
+// import { object, string, TypeOf } from "zod";
 
 import {
   createTRPCRouter,
@@ -18,12 +24,12 @@ export const userRouter = createTRPCRouter({
     .input(createUserSchema)
     .mutation(({ input }) => registerHandler({ input })),
   verify: publicProcedure
-    .input(z.object({ email: z.string(), otp: z.string() }))
+    .input(verifyUserSchema)
     .mutation(({ input }) => verifyOTPHandler({ input })),
   login: publicProcedure
     .input(loginUserSchema)
     .mutation(({ input }) => loginHandler({ input })),
   addCategory: privateProcedure
-    .input(z.object({ userId: z.string(), categoryId: z.string() }))
+    .input(addCategorySchema)
     .mutation(({ input }) => addUserCategory({ input })),
 });

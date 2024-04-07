@@ -6,14 +6,14 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { TRPCClientError } from "@trpc/client";
+// import { TRPCClientError } from "@trpc/client";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { verify } from "crypto";
+// import { verify } from "crypto";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { db } from "~/server/db";
+// import { db } from "~/server/db";
 import { verifyToken } from "~/utils/api";
 
 /**
@@ -24,7 +24,7 @@ import { verifyToken } from "~/utils/api";
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 
-type CreateContextOptions = Record<string, never>;
+// type CreateContextOptions = Record<string, never>;
 
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
@@ -106,7 +106,7 @@ const isAuthed = t.middleware(async ({ ctx, next }) => {
       message: "Not authenticated",
     });
   }
-  const payload = await verifyToken(token);
+  await verifyToken(token);
   return next({
     ctx: {},
   });

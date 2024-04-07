@@ -58,70 +58,70 @@ export const verifyOTPHandler = async ({
 }: {
   input: VerifyUserSchema;
 }) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { email: input.email },
+  // try {
+  const user = await prisma.user.findUnique({
+    where: { email: input.email },
+  });
+
+  if (!user || user.otp !== input.otp) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Invalid OTP",
     });
-
-    if (!user || user.otp !== input.otp) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Invalid OTP",
-      });
-    }
-
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        otp: null,
-        isVerified: true,
-      },
-    });
-
-    return {
-      status: "success",
-    };
-  } catch (err: any) {
-    throw err;
   }
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      otp: null,
+      isVerified: true,
+    },
+  });
+
+  return {
+    status: "success",
+  };
+  // } catch (err: any) {
+  //   throw err;
+  // }
 };
 
 export const loginHandler = async ({ input }: { input: LoginUserInput }) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { email: input.email },
-      include: { categories: true },
+  // try {
+  const user = await prisma.user.findUnique({
+    where: { email: input.email },
+    include: { categories: true },
+  });
+
+  if (!user || !(await bcrypt.compare(input.password, user.password))) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Invalid email or password",
     });
-
-    if (!user || !(await bcrypt.compare(input.password, user.password))) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Invalid email or password",
-      });
-    }
-
-    if (!user.isVerified) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Email not verified",
-      });
-    }
-
-    const secret = process.env.JWT_SECRET!;
-    const token = jwt.sign({ sub: user.id }, secret, {
-      expiresIn: 60 * 60,
-    });
-
-    const { password, otp, ...protectedUser } = user;
-
-    return {
-      status: "success",
-      token,
-      data: {
-        user: protectedUser,
-      },
-    };
-  } catch (err: any) {
-    throw err;
   }
+
+  if (!user.isVerified) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Email not verified",
+    });
+  }
+
+  const secret = process.env.JWT_SECRET!;
+  const token = jwt.sign({ sub: user.id }, secret, {
+    expiresIn: 60 * 60,
+  });
+
+  const { password, otp, ...protectedUser } = user;
+
+  return {
+    status: "success",
+    token,
+    data: {
+      user: protectedUser,
+    },
+  };
+  // } catch (err: any) {
+  //   throw err;
+  // }
 };

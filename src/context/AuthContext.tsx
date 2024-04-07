@@ -1,15 +1,22 @@
 import { useRouter } from "next/router";
-import { createContext, useContext, useReducer, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  useContext,
+  useReducer,
+  useState,
+} from "react";
 import {
   authDispatchFunction,
   initialAuthState,
   AuthState,
+  PayloadInterface,
 } from "~/reducers/authReducer";
 import { api, setToken } from "~/utils/api";
 
 interface AuthContextType {
   authState: AuthState;
-  authDispatch: any;
+  authDispatch: Dispatch<{ type: string; payload: PayloadInterface }>;
 }
 
 interface errMessageType {
@@ -23,7 +30,7 @@ const AuthContext = createContext<AuthContextType>({
   authDispatch: () => {},
 });
 
-export function AuthProvider({ children }: React.PropsWithChildren<{}>) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authState, authDispatch] = useReducer(
     authDispatchFunction,
     initialAuthState,

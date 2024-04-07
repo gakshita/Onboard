@@ -18,7 +18,9 @@ export const categoryRouter = createTRPCRouter({
 
   create: publicProcedure.mutation(async () => {
     // simulate a slow db call
-    const products = [];
+    const products: {
+      name: string;
+    }[] = [];
     for (let i = 0; i < 10; i++) {
       const product = faker.commerce.productName();
       products.push({

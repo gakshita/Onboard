@@ -61,7 +61,7 @@ const useInerests = () => {
   };
 
   useEffect(() => {
-    console.log("categories", categories, userId);
+    console.log("categories", categories, userId, router);
     if (categories) {
       categories.refetch();
     }

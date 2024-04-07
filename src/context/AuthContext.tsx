@@ -112,7 +112,6 @@ export function useAuth() {
     setLoading(true);
     try {
       const res = await asyncSignup({ name, email, password });
-      console.log(res);
       setLoading(false);
     } catch (err: any) {
       console.log(err);

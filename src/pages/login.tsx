@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "~/context";
 
 const Login = () => {
@@ -8,7 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const {
-    authState: { isUserLoggedIn },
+    // authState: { isUserLoggedIn },
     login,
     errMessage,
     loading,
@@ -18,9 +18,6 @@ const Login = () => {
     e.preventDefault();
     await login(email, password);
   };
-  useEffect(() => {
-    isUserLoggedIn && router.push("/interests");
-  }, [isUserLoggedIn]);
 
   return (
     <div className="m-auto flex">

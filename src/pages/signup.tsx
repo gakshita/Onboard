@@ -90,7 +90,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
           </button>
           <div className="mt-2 text-center text-red-500">
             {signupErr &&
-              (signupErr?.data as any)!.zodError &&
+              !(signupErr?.data as any)!.zodError &&
               signupErr.data!.stack!.split("\n")[0]}
           </div>
         </div>

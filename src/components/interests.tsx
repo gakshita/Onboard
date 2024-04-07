@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Checkbox from "~/components/checkbox";
 import useInerests, { CategoryInterface } from "~/hooks/useInterests";
 
@@ -17,6 +18,12 @@ const Interests = () => {
     setCurrentPage,
     loading,
   } = useInerests();
+  useEffect(() => {
+    console.log("categories", categories);
+    if (categories) {
+      categories.refetch();
+    }
+  }, []);
   return (
     <div className="m-auto flex">
       <div className="border-light_grey m-auto w-[576px] rounded-[20px] border-[1px] px-12 py-10 ">

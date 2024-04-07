@@ -9,7 +9,6 @@ import Navbar from "~/components/navbar";
 import { AuthProvider, useAuth } from "~/context/AuthContext";
 import { useEffect } from "react";
 
-const protectedRoutes = ["/interests"];
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -21,8 +20,9 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   } = useAuth();
 
   useEffect(() => {
+    console.log(userId);
     const isAuth = userId !== null && userId !== undefined;
-    if (!isAuth && protectedRoutes.includes(router.pathname)) {
+    if (!isAuth && router.pathname.includes("interests")) {
       router.push("/login");
     }
   }, []);

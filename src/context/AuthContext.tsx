@@ -63,8 +63,10 @@ export function useAuth() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { mutateAsync: asyncLogin } = api.user.login.useMutation({
-    onSuccess: ({ token }) => {
+    onSuccess: ({ token, data }) => {
       setToken(token);
+      console.log(data);
+      router.push(`/interests/${data.user.id}`);
     },
     onError: (err: any) => {
       setErrMessage(err), console.log(err);
@@ -101,9 +103,9 @@ export function useAuth() {
         },
       });
     } catch (err) {
+      setLoading(false);
       console.log(err);
     }
-    setLoading(false);
   };
 
   const signup = async (email: string, password: string, name: string) => {

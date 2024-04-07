@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useAuth } from "~/context";
 import { api } from "~/utils/api";
 
@@ -16,12 +17,15 @@ export interface CategoryInterface {
 }
 
 const useInerests = () => {
+  const router = useRouter();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [errMessage, setErrMessage] = useState(null);
   const [loading, setLoading] = useState<number | null>(null);
   const {
     authState: { userId },
   } = useAuth();
+  // const userId = router.query.userId;
   console.log({ userId });
   const categories =
     userId &&
@@ -56,6 +60,12 @@ const useInerests = () => {
     setLoading(null);
   };
 
+  useEffect(() => {
+    console.log("categories", categories, userId);
+    if (categories) {
+      categories.refetch();
+    }
+  }, [router.isReady]);
   return {
     categories,
     handleCheckboxChange,

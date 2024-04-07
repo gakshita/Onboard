@@ -5,7 +5,23 @@ const LOG_OUT_HANDLER = "LOG_OUT_HANDLER";
 const SAVE_USER_DETAILS_FROM_SERVER = "SAVE_USER_DETAILS_FROM_SERVER";
 const CHANGE_USERNAME_AND_EMAIL = "CHANGE_USERNAME_AND_EMAIL";
 
-export function authDispatchFunction(state, { type, payload }) {
+interface AuthState {
+  isUserLoggedIn: boolean;
+  token: string;
+  username: string;
+  email: string;
+}
+interface PayloadInterface {
+  email: string;
+  username: string;
+  user: { username: string; email: string; token: string; userId: string };
+  id: string;
+  token: string;
+}
+export function authDispatchFunction(
+  state: AuthState,
+  { type, payload }: { type: string; payload: PayloadInterface },
+) {
   switch (type) {
     case SAVE_USER_DETAILS_FROM_SERVER:
       return { ...state, email: payload.email, username: payload.username };

@@ -140,7 +140,10 @@ const VerifyEmail: React.FC<VerifyEmailProps> = ({ email }) => {
     inputRefs.current && inputRefs.current[index]!.setSelectionRange(1, 1);
   };
 
-  const handleKeyDown = (e: KeyboardEvent, index: number) => {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number,
+  ) => {
     if (e.key === "Backspace" && index > 0) {
       if (otp[index] === "") {
         inputRefs.current[index - 1]!.focus();
@@ -171,9 +174,9 @@ const VerifyEmail: React.FC<VerifyEmailProps> = ({ email }) => {
               id="text"
               required
               value={otp[index]}
-              ref={(input) =>
-                (inputRefs.current[index] = input as HTMLInputElement)
-              }
+              ref={(input) => {
+                if (input) inputRefs.current[index] = input;
+              }}
               onChange={(e) => handleChange(e, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               onClick={() => handleClick(index)}

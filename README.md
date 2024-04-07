@@ -1,29 +1,47 @@
-# Create T3 App
+# MERN Project
+This repository contains the code for the MERN project, which is a simple sign-up and login flow for an e-commerce website where users can mark categories they are interested in. The project utilizes a tech stack recommended by the guidelines, including Next.js, tRPC, Prisma, and Tailwind CSS.
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## Deployment
+The application is deployed on Vercel's free tier. You can access the live demo [here](https://rocket-assignment-psi.vercel.app/signup).
 
-## What's next? How do I make an app with this?
+## Tech Stack
+- Database: PostgreSQL from Neon or another RDBMS provider.
+- Framework: Create.t3.gg for Next.js, tRPC, Prisma, and Tailwind CSS.
+- VCS: GitHub for code repository (public).
+- App Hosting: Vercel's free tier or another free Next.js hosting provider.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Demo Video
+[Demo](https://www.loom.com/embed/4f2522736b3041f3bcc3d884fe5491c8)
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Features
+User registration and login functionality.
+JWT and OTP based Authentication.
+Category selection for users.
+Paginated category list with dynamic pagination.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
 
-## Learn More
+## Setup Instructions
+- Install dependencies:
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+```
+cd mern
+npm install
+```
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- Configure the database:
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+Set up a PostgreSQL database (e.g., from Neon or another provider).
+Update the DATABASE_URL in the .env file with your database connection URL.
 
-## How do I deploy this?
+- Run database migrations:
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+```
+npx prisma migrate dev
+Start the development server:
+```
+
+```
+npm run dev
+```
+- Open your browser and navigate to http://localhost:3000 to view the application.
+

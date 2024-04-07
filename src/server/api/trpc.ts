@@ -6,12 +6,15 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
+import { TRPCClientError } from "@trpc/client";
+import { initTRPC, TRPCError } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { verify } from "crypto";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "~/server/db";
+import { verifyToken } from "~/utils/api";
 
 /**
  * 1. CONTEXT
@@ -33,11 +36,6 @@ type CreateContextOptions = Record<string, never>;
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
-const createInnerTRPCContext = (_opts: CreateContextOptions) => {
-  return {
-    db,
-  };
-};
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request
@@ -46,7 +44,11 @@ const createInnerTRPCContext = (_opts: CreateContextOptions) => {
  * @see https://trpc.io/docs/context
  */
 export const createTRPCContext = (_opts: CreateNextContextOptions) => {
-  return createInnerTRPCContext({});
+  const { req, res } = _opts;
+  return {
+    req,
+    res,
+  };
 };
 
 /**
@@ -90,6 +92,26 @@ export const createCallerFactory = t.createCallerFactory;
  *
  * @see https://trpc.io/docs/router
  */
+
+const isAuthed = t.middleware(async ({ ctx, next }) => {
+  // if (!ctx.db.user) {
+  //   throw new Error("Not authenticated");
+  // }
+  // return req;
+  const { req } = ctx;
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Not authenticated",
+    });
+  }
+  const payload = await verifyToken(token);
+  return next({
+    ctx: {},
+  });
+});
+
 export const createTRPCRouter = t.router;
 
 /**
@@ -100,3 +122,4 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
+export const privateProcedure = t.procedure.use(isAuthed);

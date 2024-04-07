@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { authDispatchFunction, initialAuthState } from "~/reducers/authReducer";
-import { api } from "~/utils/api";
+import { api, setToken } from "~/utils/api";
 
 interface AuthContextType {
   authState: any;
@@ -38,6 +38,19 @@ export function AuthProvider({ children }: React.PropsWithChildren<{}>) {
     router.push("/signup");
   }
 
+  // useEffect(() => {
+  //   const memory = JSON.parse(localStorage.getItem("Login") || "{}");
+  //   if (memory?.isUserLoggedIn === true) {
+  //     if (memory.token) {
+  //       authDispatch({
+  //         type: "LOGIN_BY_LOCAL_STORAGE",
+  //         payload: { user: memory },
+  //       });
+  //     } else {
+  //       previousVersionUserCleanup();
+  //     }
+  //   }
+  // }, [authDispatch]);
   console.log(authState);
   return (
     <AuthContext.Provider value={{ authState, authDispatch }}>
@@ -52,6 +65,9 @@ export function useAuth() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { mutateAsync: asyncLogin } = api.user.login.useMutation({
+    onSuccess: ({ token }) => {
+      setToken(token);
+    },
     onError: (err: any) => {
       setErrMessage(err), console.log(err);
     },

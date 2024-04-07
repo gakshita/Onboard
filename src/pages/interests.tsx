@@ -1,66 +1,22 @@
-import { redirect } from "next/navigation";
-import { useRouter } from "next/router";
-import { useLayoutEffect, useState } from "react";
 import Checkbox from "~/components/checkbox";
-import { useAuth } from "~/context";
-import { api } from "~/utils/api";
+import useInerests from "~/hooks/useInterests";
 
 const TOTAL_PAGES = 169;
-const PAGE_LIMIT = 6;
 
 interface CategoryType {
   id: number;
   name: string;
   isInterested: boolean;
 }
+
 const Interests = () => {
-  const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [errMessage, setErrMessage] = useState(null);
-  const [loading, setLoading] = useState<Number | null>(null);
   const {
-    authState: { userId },
-  } = useAuth();
-  console.log({ userId });
-  const categories =
-    userId &&
-    api.category.all.useQuery({
-      limit: PAGE_LIMIT,
-      skip: currentPage * PAGE_LIMIT,
-      userId: userId.toString(),
-    });
-
-  const { mutateAsync, error } = api.user.addCategory.useMutation({
-    onError: (err: any) => {
-      setErrMessage(err), console.log(err);
-    },
-  });
-
-  const handleCheckboxChange = async (id: number) => {
-    console.log(id, userId);
-    setLoading(id);
-
-    try {
-      const res = await mutateAsync({
-        userId: userId.toString(),
-        categoryId: id.toString(),
-      });
-      console.log(res);
-      await categories.refetch();
-      console.log(categories);
-    } catch (err) {
-      console.log(err);
-    }
-    setLoading(null);
-  };
-
-  useLayoutEffect(() => {
-    const isAuth = userId !== null && userId !== undefined;
-    console.log({ isAuth, userId });
-    if (!isAuth) {
-      router.push("/");
-    }
-  }, []);
+    categories,
+    handleCheckboxChange,
+    currentPage,
+    setCurrentPage,
+    loading,
+  } = useInerests();
   return (
     <div className="m-auto flex">
       <div className="border-light_grey m-auto w-[576px] rounded-[20px] border-[1px] px-12 py-10 ">

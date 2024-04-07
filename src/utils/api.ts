@@ -8,7 +8,7 @@ import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
-
+import { jwtVerify } from "jose";
 import { type AppRouter } from "~/server/api/root";
 
 const getBaseUrl = () => {
@@ -17,6 +17,11 @@ const getBaseUrl = () => {
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 };
 
+let token: string;
+
+export const setToken = (newToken: string) => {
+  token = newToken;
+};
 /** A set of type-safe react-query hooks for your tRPC API. */
 export const api = createTRPCNext<AppRouter>({
   config() {
@@ -40,6 +45,9 @@ export const api = createTRPCNext<AppRouter>({
            */
           transformer: superjson,
           url: `${getBaseUrl()}/api/trpc`,
+          headers: () => ({
+            Authorization: `Bearer ${token}`,
+          }),
         }),
       ],
     };
@@ -66,3 +74,19 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
  * @example type HelloOutput = RouterOutputs['example']['hello']
  */
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
+
+interface UserJwtPayload {
+  id: string;
+  tokenVersion: number;
+}
+export const verifyToken = async (token: string) => {
+  try {
+    const verified = await jwtVerify(
+      token,
+      new TextEncoder().encode(process.env.JWT_SECRET!),
+    );
+    return verified.payload as any as UserJwtPayload;
+  } catch (err) {
+    throw new Error("Invalid token");
+  }
+};

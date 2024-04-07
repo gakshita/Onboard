@@ -44,12 +44,19 @@ export const addUserCategory = async ({
 export const getUserCategory = async ({
   input,
 }: {
-  input: { userId: string };
+  input: {
+    limit: number;
+    skip: number;
+    userId: string;
+  };
 }) => {
   try {
-    // Fetch all categories
-    const allCategories = await prisma.category.findMany();
+    const allCategories = await prisma.category.findMany({
+      skip: input.skip,
+      take: input.limit,
+    });
 
+    const totalCount = await prisma.category.count();
     // Fetch the user to check their associated categories
     const userCategories = await prisma.user.findUnique({
       where: { id: parseInt(input.userId) },
@@ -75,13 +82,18 @@ export const getUserCategory = async ({
 
     // Convert the map to an array of objects with true/false values
     const categoriesPresence = allCategories.map((category) => ({
-      categoryId: category.id,
-      categoryName: category.name,
-      isPresent: categoryPresenceMap.get(category.id),
+      id: category.id,
+      name: category.name,
+      isInterested: categoryPresenceMap.get(category.id),
     }));
 
-    return { status: "success", data: categoriesPresence };
-  } catch (err: any) {
-    throw err;
+    return {
+      data: categoriesPresence,
+      status: "success",
+      totalCount,
+      totalPages: Math.ceil(totalCount / input.limit) - 1,
+    };
+  } catch (error) {
+    throw error;
   }
 };

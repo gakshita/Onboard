@@ -4,7 +4,6 @@ const Navbar = () => {
       <div className="flex justify-end gap-x-5 px-10 pb-2 pt-2 text-xs		">
         <button>Help</button>
         <button>Orders & Returns</button>
-        {/* <button>Logout</button> */}
       </div>
       <div className="flex justify-between px-10 pb-2">
         <div className="text-xxxl font-bold">ECOMMERCE</div>

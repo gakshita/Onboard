@@ -151,7 +151,6 @@ const VerifyEmail: React.FC<VerifyEmailProps> = ({ email }) => {
       setOtp(newOtp);
     }
   };
-  console.log({ otp });
 
   return (
     <form onSubmit={handleSubmit}>
